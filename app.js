@@ -1,12 +1,12 @@
 // Single state object
 var state = {
-    items: ['eggs', 'apple', 'juice']
+    items: [{name: 'eggs', checked: true}, {name: 'carrots', checked: false}]
 };
 
 
 // State modification functions
-function addItem (state, item) {
-    state.items.push(item);
+function addItem (state, itemName) {
+    state.items.push({name: itemName, checked: false});
 }
 
 
@@ -20,7 +20,7 @@ function renderList (state, element) {
     var itemsHTML = state.items.map(function(item, index) {
         return '<li data-index=' + index + '>' +
             '<span class="shopping-item">' + 
-            item + 
+            item.name + 
             '</span>' +
             '<div class="shopping-item-controls">' +
                 '<button class="shopping-item-toggle">' +
