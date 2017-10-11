@@ -6,7 +6,10 @@ var state = {
 
 // State modification functions
 function addItem (state, itemName) {
-    state.items.push({name: itemName, checked: false});
+    state.items.push({
+        name: itemName, 
+        checked: false
+    });
 }
 
 
@@ -14,12 +17,20 @@ function deleteItems (state, itemIndex) {
     state.items.splice(itemIndex, 1);
 }
 
+function checkItem (state, itemIndex) {
+    state.items[itemIndex].checked = !state.items[itemIndex].checked; 
+}
+
 
 // Render functions
 function renderList (state, element) {
     var itemsHTML = state.items.map(function(item, index) {
-        return '<li data-index=' + index + '>' +
-            '<span class="shopping-item">' + 
+        var className = "";
+        if(item.checked) {
+            className = "shopping-item__checked"
+        }    
+        return '<li data-index=' + index + '>' + 
+            '<span class="shopping-item ' + className + '">' + 
             item.name + 
             '</span>' +
             '<div class="shopping-item-controls">' +
@@ -32,7 +43,6 @@ function renderList (state, element) {
             '</div>' +
             '</li>';
     });
-    console.log(itemsHTML);
     element.html(itemsHTML);
 }
 
@@ -45,14 +55,18 @@ function doAddItem(){
     var input = $(this).find('input[name=shopping-list-entry]').val();
     addItem(state, input);
     renderList(state, $('.shopping-list'));
+    this.reset();
     });
 }
 
 //Check and Uncheck
 function doCheckItem(){
     $('.shopping-list').on('click', '.shopping-item-toggle', function(event) {
-    $(this).closest("li").toggleClass("shopping-item__checked");
+    var itemIndex = $(this).closest("li").attr("data-index");
+    checkItem(state, itemIndex)
+    renderList(state, $('.shopping-list'));
     });
+
 }
 
 //Remove Items
