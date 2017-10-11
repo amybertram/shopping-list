@@ -1,23 +1,8 @@
 // Single state object
 var state = {
-    items: []
+    items: ['eggs', 'apple', 'juice']
 };
 
-
-// HTML for items
-/*var itemHTML = function makeHTML(item) { 
-    '<li>' +
-    '<span class="shopping-item">' + item + '</span>' +
-    '<div class="shopping-item-controls">' +
-        '<button class="shopping-item-toggle">' +
-            '<span class="button-label">check</span>' +
-          '</button>' +
-          '<button class="shopping-item-delete">' +
-            '<span class="button-label">delete</span>' +
-          '</button>' +
-        '</div>' +
-      '</li>';
-}*/
 
 // State modification functions
 function addItem (state, item) {
@@ -32,19 +17,22 @@ function deleteItems (state, itemIndex) {
 
 // Render functions
 function renderList (state, element) {
-    var itemsHTML = state.items.map(function(item) {
-        return '<li>' +
-    '<span class="shopping-item">' + item + '</span>' +
-    '<div class="shopping-item-controls">' +
-        '<button class="shopping-item-toggle">' +
-            '<span class="button-label">check</span>' +
-          '</button>' +
-          '<button class="shopping-item-delete">' +
-            '<span class="button-label">delete</span>' +
-          '</button>' +
-        '</div>' +
-      '</li>';
+    var itemsHTML = state.items.map(function(item, index) {
+        return '<li data-index=' + index + '>' +
+            '<span class="shopping-item">' + 
+            item + 
+            '</span>' +
+            '<div class="shopping-item-controls">' +
+                '<button class="shopping-item-toggle">' +
+                    '<span class="button-label">check</span>' +
+                '</button>' +
+                '<button class="shopping-item-delete">' +
+                    '<span class="button-label">delete</span>' +
+                '</button>' +
+            '</div>' +
+            '</li>';
     });
+    console.log(itemsHTML);
     element.html(itemsHTML);
 }
 
@@ -56,7 +44,7 @@ function doAddItem(){
     event.preventDefault();
     var input = $(this).find('input[name=shopping-list-entry]').val();
     addItem(state, input);
-    renderList(state, $('.js-shopping-list'));
+    renderList(state, $('.shopping-list'));
     });
 }
 
@@ -70,15 +58,16 @@ function doCheckItem(){
 //Remove Items
 function doRemoveItem(){
     $('.shopping-list').on('click', '.shopping-item-delete', function(event) {
-    $(this).closest("li").remove();
-    //var itemIndex = state.items[item];
+    //$(this).closest("li").remove();
+    var itemIndex = $(this).closest("li").attr("data-index");
     deleteItems(state, itemIndex);
-    renderList(state, $('.js-shopping-list'));
+    renderList(state, $('.shopping-list'));
     });
 }
 
 //Call Functions
 $(function(){
+    renderList(state, $('.shopping-list'));
     doAddItem();
     doCheckItem();
     doRemoveItem();
